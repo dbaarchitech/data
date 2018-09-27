@@ -1,0 +1,20 @@
+{
+  "1" :
+      {
+        "Desc":"Calculate the max daily profit "
+        ,"functionName":"max_daily_profit"
+        ,"DictName":"Max Daily Profit:  "
+      }
+  ,"2" :
+        {
+          "Desc":"Calculate the busy days "
+          ,"functionName":"busy_day"
+          ,"DictName":"Busy Days:  "
+        }
+  ,"3" :
+      {
+        "Desc":"Calculate the biggest loser "
+        ,"functionName":"biggest_loser"
+        ,"DictName":"Biggest Loser: "
+      }
+}
