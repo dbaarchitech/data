@@ -12,7 +12,7 @@ sys.path.append(os.path.join(dir_path,"Util"))
 from StockAnalyticalPackage import StockAnalyticalPackage
 from Stockobj import Stockobj
 from json_parser import json_parser
-from SystemScanner import getCurrentSystem
+
 
 
 
@@ -20,8 +20,11 @@ from SystemScanner import getCurrentSystem
 
 def main():
 
+    #this will get the OS of the computer
+
     #Since I don't have access to a database I am using xml to configure the actions
     #of this script.
+
     TickerSymbolConfig = os.path.join(dir_path,'config','TickerSymbolConfig.json')
     FunctionListConfig =os.path.join(dir_path,'config','FunctionListConfig.json')
 
@@ -59,7 +62,7 @@ def main():
         #
         for functionName in FunctionListJson.items():
             print (functionName[0]+': '+functionName[1]['Desc'])
-        command = input().strip()
+        command = str(input()).strip()
         if command.isdigit():
 
             if int(command) <= len(FunctionListJson) and int(command) >=1:

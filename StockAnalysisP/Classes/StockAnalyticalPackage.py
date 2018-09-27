@@ -1,4 +1,4 @@
-
+from SystemScanner import getCurrentSystem
 class StockAnalyticalPackage():
 
     """
@@ -33,9 +33,10 @@ class StockAnalyticalPackage():
 
         """
     ListStockObjs={}
-
+    SYSTEM=''
     def __init__(self,p_ListObjs ):
         self.ListStockObjs=p_ListObjs
+        self.SYSTEM = getCurrentSystem()
 
 
     def average_month_price(self):
@@ -44,11 +45,13 @@ class StockAnalyticalPackage():
         for ticker in ListOfStockObjs.items():
             print(ticker[1].StockTicker)
         #end for loop
-        try:
+        if self.SYSTEM =='win32':
+            tickerSymbol = (raw_input().strip()).upper()
+        else:
             tickerSymbol = (input().strip()).upper()
-            return ListOfStockObjs[tickerSymbol].price_data.groupby(['date_ym'])['ticker','close','open'].mean()
-        except:
-            return "Unable to find stock ticker symbol in table"
+        return ListOfStockObjs[tickerSymbol].price_data.groupby(['date_ym'])['ticker','close','open'].mean()
+        #except:
+        #    return "Unable to find stock ticker symbol in table"
 
     """
         max_daily_profit() returns
