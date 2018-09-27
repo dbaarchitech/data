@@ -43,64 +43,86 @@ class StockAnalyticalPackage():
         print('Please type in which ticker symbol you are interested in: ')
         for ticker in ListOfStockObjs.items():
             print(ticker[1].StockTicker)
-
+        #end for loop
         try:
             tickerSymbol = (input().strip()).upper()
-            return ListOfStockObjs[tickerSymbol].data.groupby(['date_ym'])['ticker','close','open'].mean()
+            return ListOfStockObjs[tickerSymbol].price_data.groupby(['date_ym'])['ticker','close','open'].mean()
         except:
             return "Unable to find stock ticker symbol in table"
 
-
+    """
+        max_daily_profit() returns
+            a dict that contains the max stock price
+            that the stocks were sold at
+    """
 
     def max_daily_profit(self):
         StockMaxDict = {}
         ListOfStockObjs=self.ListStockObjs
 
         for stock in ListOfStockObjs.items():
-            MaxValue = stock[1].data['high'][0]-stock[1].data['low'][0]
-            stock[1].data['high']-stock[1].data['low']
+            MaxValue = stock[1].price_data['high'][0]-stock[1].price_data['low'][0]
+            stock[1].price_data['high']-stock[1].price_data['low']
 
-            for index, row in stock[1].data.iterrows():
+            for index, row in stock[1].price_data.iterrows():
                 #if the current delta between the high and low price
                 #greater than the max value then this will replace it
                 if MaxValue < row['high']- row['low']:
                     MaxValue =row['high']- row['low']
-            StockMaxDict[stock[0]] = {'TickerSymbol':stock[0],'Date':row['date'],'MaxProfit':MaxValue}
+            #end for loop
+
+            StockMaxDict[stock[0]] = {'TickerSymbol':stock[0],'Date':row['date'],'MaxProfit':round(MaxValue,4)}
+        #end for loop
         return StockMaxDict
 
-
+    """
+    busy_day() returns
+        a dict with a list of the busy days
+        for each ticker
+    """
     def busy_day(self):
         BusyDayDict = {}
         ListOfStockObjs=self.ListStockObjs
         for stock in ListOfStockObjs.items():
-            AvgValue = stock[1].data['volume'].mean()
+            AvgValue = stock[1].price_data['volume'].mean()
             Count = 0
-            for index,row in stock[1].data.iterrows():
+            for index,row in stock[1].price_data.iterrows():
                 if AvgValue*1.10 <row['volume']:
                     Count += 1
+            #end for loop
             BusyDayDict[stock[0]] = {'TotalAboveAverage':Count,'AvgValue':AvgValue}
+        #end for loop
         return BusyDayDict
 
+    """
+        biggest_loser() returns
+            a dict with the stock that had the
+            most days where teh open price was less than the cloe price
+    """
+
     def biggest_loser(self):
+
         ListOfStockObjs=self.ListStockObjs
         LossesDict = {}
         LossLeaderDict ={}
-        rn = 0
+        ticker_row_number = 0
         for stock in ListOfStockObjs.items():
-            Count = 0
-            for index,row in stock[1].data.iterrows():
-                TotalLosses = row['open'] - row['close']
-                if TotalLosses < 0:
-                    Count +=1
-            LossesDict[rn] = {'TickerSymbol':stock[0],'Count':Count}
-            rn +=1
+            count_of_losses = 0
+            for index,row in stock[1].price_data.iterrows():
+                total_losses = row['open'] - row['close']
+                if total_losses < 0:
+                    count_of_losses +=1
+            #end for loop
+            LossesDict[ticker_row_number] = {'TickerSymbol':stock[0],'Count':count_of_losses}
+            ticker_row_number +=1
+        #end for loop
 
         lowest_loss = LossesDict[0]['Count']
         LossLeaderDict['0'] = {'Symbol':LossesDict[0]['TickerSymbol'],'Count':LossesDict[0]['Count']}
         for key,value in LossesDict.items():
-
-            if lowest_loss > value['Count']:
+            if lowest_loss < value['Count']:
                 print(lowest_loss)
-                LossLeaderDict[value['TickerSymbol']] = {'Symbol':value['TickerSymbol'],'Count':value['Count']}
+                LossLeaderDict['0'] = {'Symbol':value['TickerSymbol'],'Count':value['Count']}
                 lowest_loss = value['Count']
+        #end for loop
         return LossLeaderDict
